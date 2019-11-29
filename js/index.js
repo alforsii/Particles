@@ -18,8 +18,10 @@ class Particle {
   draw() {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
-    ctx.fillStyle = this.color;
-    ctx.fill();
+    // ctx.fillStyle = this.color;
+    ctx.strokeStyle = this.color;
+    // ctx.fill();
+    ctx.stroke();
     ctx.closePath();
   }
 }
@@ -30,7 +32,7 @@ function getParticles(particlesNum) {
   for (let i = 0; i < particlesNum; i++) {
     let x = Math.random() * canvas.width;
     let y = Math.random() * canvas.height;
-    let radius = 15;
+    let radius = 45;
     let color = 'blue';
     particles.push(new Particle(x, y, radius, color));
   }
@@ -58,5 +60,5 @@ function getDistance(x1, y1, x2, y2) {
 }
 
 // call functions we need to animate our circles.
-getParticles(300);
+getParticles(7);
 animate();
