@@ -7,7 +7,7 @@ const ctx = canvas.getContext('2d');
 // canvas.width = innerWidth;
 // canvas.height = innerHeight;
 
-//2.Create a class to make Circles.
+//Create a class to make Particle.
 class Particle {
   constructor(x, y, r, color) {
     this.x = x;
@@ -29,16 +29,33 @@ class Particle {
 let particles;
 function getParticles(particlesNum) {
   particles = [];
+  //first loop is to create particles
   for (let i = 0; i < particlesNum; i++) {
     let x = Math.random() * canvas.width;
     let y = Math.random() * canvas.height;
     let radius = 45;
     let color = 'blue';
+    //second loop we wont to check for collision detection if one particle is not overlapping on top another.
+    //first iteration we want to skip to have fist particle in our array to compare with.
+    if (i !== 0) {
+      for (let j = 0; j < particles.length; j++) {
+        //we'll our function getDistance() in line 64,to calculate distance and compare for collision.
+        //lets get distance between first and second particles.
+        let distance = getDistance(x, y, particles[j].x, particles[j].y);
+        if (distance < radius * 2) {
+          x = Math.random() * canvas.width;
+          y = Math.random() * canvas.height;
+          j = -1;
+        }
+        //or ==>>
+        // if(distance - radius*2<0){}
+      }
+    }
     particles.push(new Particle(x, y, radius, color));
   }
 }
 
-//5. Create animation function to draw circles.
+// Create animation function to draw circles.
 
 function animate() {
   requestAnimationFrame(animate);
@@ -48,7 +65,7 @@ function animate() {
   });
 }
 
-//6.Use pythagorean theorem to find the distance.
+//Use pythagorean theorem to find the distance.
 // distance^2 === (x2-x1)^2 + (y2-y1)^2 ;
 // distance === Math.sqrt((x2-x1)^2 + (y2-y1)^2);
 //Math.pow(base,exponent);
