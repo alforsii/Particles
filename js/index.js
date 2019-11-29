@@ -12,9 +12,32 @@ class Particle {
   constructor(x, y, r, color) {
     this.x = x;
     this.y = y;
+    this.velocity = {
+      x: Math.random() - 0.5,
+      y: Math.random() - 0.5,
+    };
     this.radius = r;
     this.color = color;
   }
+
+  update(particles) {
+    this.draw();
+    for (let i = 0; i < particles.length; i++) {
+      if (this === particles[i]) continue;
+      let distance = getDistance(
+        this.x,
+        this.y,
+        particles[i].x,
+        particles[i].y
+      );
+      if (distance < this.radius * 2) {
+        console.log('has collide');
+      }
+    }
+    this.x += this.velocity.x;
+    this.y += this.velocity.y;
+  }
+
   draw() {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
@@ -31,10 +54,13 @@ function getParticles(particlesNum) {
   particles = [];
   //first loop is to create particles
   for (let i = 0; i < particlesNum; i++) {
-    let x = Math.random() * canvas.width;
-    let y = Math.random() * canvas.height;
     let radius = 45;
     let color = 'blue';
+    // let x = Math.random() * canvas.width;
+    // let y = Math.random() * canvas.height;
+    //we'll switch our random x and y to keep particles inside the canvas.
+    let x = randomWithinBoundaries(radius, canvas.width - radius);
+    let y = randomWithinBoundaries(radius, canvas.height - radius);
     //second loop we wont to check for collision detection if one particle is not overlapping on top another.
     //first iteration we want to skip to have fist particle in our array to compare with.
     if (i !== 0) {
@@ -43,8 +69,8 @@ function getParticles(particlesNum) {
         //lets get distance between first and second particles.
         let distance = getDistance(x, y, particles[j].x, particles[j].y);
         if (distance < radius * 2) {
-          x = Math.random() * canvas.width;
-          y = Math.random() * canvas.height;
+          x = randomWithinBoundaries(radius, canvas.width - radius);
+          y = randomWithinBoundaries(radius, canvas.height - radius);
           j = -1;
         }
         //or ==>>
@@ -55,13 +81,19 @@ function getParticles(particlesNum) {
   }
 }
 
+//Create a function to create a random number that will
+//keep our particles within our canvas height and width.
+function randomWithinBoundaries(max, min) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 // Create animation function to draw circles.
 
 function animate() {
   requestAnimationFrame(animate);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   particles.forEach(particle => {
-    particle.draw();
+    particle.update(particles);
   });
 }
 
