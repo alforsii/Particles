@@ -7,6 +7,12 @@ const ctx = canvas.getContext('2d');
 // canvas.width = innerWidth;
 // canvas.height = innerHeight;
 
+let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+document.addEventListener('mousemove', event => {
+  mouse.x = event.clientX;
+  mouse.y = event.clientY;
+});
+
 //Create a class to make Particle.
 class Particle {
   constructor(x, y, r, color) {
@@ -19,6 +25,7 @@ class Particle {
     this.radius = r;
     this.color = color;
     this.mass = 1;
+    this.opacity = 0;
   }
 
   update(particles) {
@@ -49,6 +56,27 @@ class Particle {
     if (this.y - this.radius <= 0 || this.y + this.radius >= canvas.height) {
       this.velocity.y = -this.velocity.y;
     }
+
+    //mouse detection on hovering. Below in getDistance number 80 is a radius if you check getDistance()
+    if (
+      getDistance(mouse.x, mouse.y, this.x, this.y) < 80 &&
+      this.opacity <= 0.25
+    ) {
+      // console.log('hovered');
+      //lets create first fill color in draw().
+      this.opacity += 0.03;
+      //to restrict opacity we add to our if statement above (&& this.opacity<=any number) restrict to
+      //so when we hover particles will get fill up to color opacity we provide.
+    } else if (this.opacity > 0) {
+      this.opacity -= 0.01;
+      //this will make our opacity go below (opacity<0)
+      //which we don't want, to avoid this issue we gotta make sure
+      //that opacity >0
+      this.opacity = Math.max(0, this.opacity);
+      //Math.max what it does,is that it returns 0 or current opacity if it's > 0.
+    }
+
+    //move particles
     this.x += this.velocity.x;
     this.y += this.velocity.y;
   }
@@ -57,16 +85,25 @@ class Particle {
   draw() {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
-    // ctx.fillStyle = this.color;
+    ctx.save(); //we save color to restore after opacity and fill() to restore border color for stroke()
+    ctx.globalAlpha = this.opacity;
+    ctx.fillStyle = this.color;
+    ctx.fill();
+    ctx.restore();
     ctx.strokeStyle = this.color;
-    // ctx.fill();
     ctx.stroke();
     ctx.closePath();
   }
 }
 
 //colors
-const colors = ['#00f', '#0f0', '#0ff', '#f0f', '#ff0'];
+const colors = [
+  '#00f', //purple
+  '#0f0', //green
+  '#0ff', //lightBlue
+  '#f0f', //red
+  // '#ff0', //yellow
+];
 
 //get random color
 function randomColor(colors) {
