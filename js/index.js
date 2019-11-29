@@ -25,8 +25,15 @@ class Particle {
 }
 
 let particles;
-function init() {
+function getParticles(particlesNum) {
   particles = [];
+  for (let i = 0; i < particlesNum; i++) {
+    let x = Math.random() * canvas.width;
+    let y = Math.random() * canvas.height;
+    let radius = 15;
+    let color = 'blue';
+    particles.push(new Particle(x, y, radius, color));
+  }
 }
 
 //5. Create animation function to draw circles.
@@ -34,24 +41,9 @@ function init() {
 function animate() {
   requestAnimationFrame(animate);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // bigCircle.draw();
-  // smallCircle.draw();
-  // smallCircle.x = mouse.x;
-  // smallCircle.y = mouse.y;
-  // let distance = getDistance(
-  //   smallCircle.x,
-  //   smallCircle.y,
-  //   bigCircle.x,
-  //   bigCircle.y
-  // );
-  // if (distance < smallCircle.radius + bigCircle.radius) {
-  //   bigCircle.color = 'red';
-  // } else {
-  //   bigCircle.color = 'black';
-  // }
-
-  //   console.log('Output for: animate -> timer', timer);
+  particles.forEach(particle => {
+    particle.draw();
+  });
 }
 
 //6.Use pythagorean theorem to find the distance.
@@ -66,5 +58,5 @@ function getDistance(x1, y1, x2, y2) {
 }
 
 // call functions we need to animate our circles.
-init();
+getParticles(300);
 animate();
