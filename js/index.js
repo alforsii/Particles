@@ -18,6 +18,8 @@ class Particle {
     };
     this.radius = r;
     this.color = color;
+    // this.elasticVelocity = new ElasticVelocity();
+    this.mass = 1;
   }
 
   update(particles) {
@@ -32,7 +34,20 @@ class Particle {
       );
       if (distance < this.radius * 2) {
         console.log('has collide');
+        //https://en.wikipedia.org/wiki/Elastic_collision
+        //we need to do elastic collision in here.
+        // this.velocity.x = -this.velocity.x;
+        // this.velocity.y = -this.velocity.y;
+
+        resolveCollision(this, particles[i]);
       }
+    }
+
+    if (this.x - this.radius <= 0 || this.x + this.radius >= canvas.width) {
+      this.velocity.x = -this.velocity.x;
+    }
+    if (this.y - this.radius <= 0 || this.y + this.radius >= canvas.height) {
+      this.velocity.y = -this.velocity.y;
     }
     this.x += this.velocity.x;
     this.y += this.velocity.y;
