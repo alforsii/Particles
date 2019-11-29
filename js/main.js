@@ -60,11 +60,11 @@ class Particle {
     //mouse detection on hovering. Below in getDistance number 80 is a radius if you check getDistance()
     if (
       getDistance(mouse.x, mouse.y, this.x, this.y) < 80 &&
-      this.opacity <= 0.25
+      this.opacity <= 0.3
     ) {
       // console.log('hovered');
       //lets create first fill color in draw().
-      this.opacity += 0.03;
+      this.opacity += 0.05;
       //to restrict opacity we add to our if statement above (&& this.opacity<=any number) restrict to
       //so when we hover particles will get fill up to color opacity we provide.
     } else if (this.opacity > 0) {
